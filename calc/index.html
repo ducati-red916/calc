@@ -61,7 +61,7 @@
     <input type="number" id="b" name="b" required><br><br>
 
     <label for="value">Value:</label>
-    <input type="number" id="value" name="value" required><br><br>
+    <input type="number" id="value" name="value" step="any" required><br><br> <!-- Allow decimal inputs -->
 
     <label for="rule">Rule:</label>
     <select id="rule" name="rule">
@@ -104,10 +104,13 @@
         });
 
         const result = await response.json();
-        document.getElementById('result').innerHTML = `
+
+        // Display the results on the webpage
+        const resultDiv = document.getElementById('result');
+        resultDiv.innerHTML = `
             <h2>Result</h2>
             <p>Answer: ${result.answer}</p>
-            <p>Error: ${result.error}</p>
+            <p>Error: ${result.max_error}</p>
             <p>Over/Under: ${result.over_under}</p>
             <p>n: ${result.n}</p>
         `;
