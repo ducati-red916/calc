@@ -157,7 +157,7 @@
             requestData['max_error'] = 0;
         }
 
-        const response = await fetch('http:internal/calc_backend.cgi', {
+        const response = await fetch('internal/Riemann_sums_env.cgi', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

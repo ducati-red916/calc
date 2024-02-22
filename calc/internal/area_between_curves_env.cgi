@@ -4,5 +4,5 @@ DOT_SAGE=/tmp/sage_apache; export DOT_SAGE
 #echo ""
 #echo "<pre>"
 #pwd
-sage calc_backend_core.cgi
+sage area_between_curves_core.cgi
 #echo "</pre>"
