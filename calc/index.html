@@ -157,7 +157,7 @@
             requestData['max_error'] = 0;
         }
 
-        const response = await fetch('internal/Riemann_sums_env.cgi', {
+        const response = await fetch('internal/sage_env.cgi?action=riemann_sums.cgi', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
