@@ -189,7 +189,7 @@
         // Display graph image if filepath is provided in the result
         if (result.filepath) {
             const graphImage = document.getElementById('graphImage');
-            graphImage.src = result.filepath;
+            graphImage.src = result.filepath + '?' + Math.random();
         }
     });
 </script>
