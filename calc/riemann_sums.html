@@ -125,6 +125,7 @@
 </form>
 
 <div id="result"></div>
+<img id="graphImage" src="" alt="Graph">
 
 <script>
     function updateValueLabel() {
@@ -143,7 +144,7 @@
         }
     }
 
-    updateValueLabel();
+   updateValueLabel();
 
     document.getElementById('riemannType').addEventListener('change', updateValueLabel);
 
@@ -184,6 +185,12 @@
             <p>Error: ${result.error}</p>
             <p>Over/Under: ${result.over_under}</p>
         `;
+
+        // Display graph image if filepath is provided in the result
+        if (result.filepath) {
+            const graphImage = document.getElementById('graphImage');
+            graphImage.src = result.filepath;
+        }
     });
 </script>
 </body>

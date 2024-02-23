@@ -30,7 +30,7 @@ max_error = float(request_data['max_error'])
 rule = request_data['rule']
 
 def integrate(f, a, b, n, max_error, rule):
-	filepath="/calc/internal/temp/graph"
+	filepath="/calc/internal/temp/graph.png"
 	if os.path.exists(filepath):
 		os.remove(filepath)
 	def midpoint_rule(fcn,a,b,n):
@@ -62,7 +62,7 @@ def integrate(f, a, b, n, max_error, rule):
 		partition_width = (b - a) / n
 
 		# Plotting
-		plt.plot(x_values, y_values, label='Function: $y = x^2$')
+		plt.plot(x_values, y_values, label=f'Function: $y = {f}$')
 		plt.xlabel('x')
 		plt.ylabel('y')
 
@@ -81,7 +81,42 @@ def integrate(f, a, b, n, max_error, rule):
 		plt.legend()
 		plt.savefig(filename)
 		
+	def midpoint_rule_plot(f, a, b, n, filename):
+		# Define the x values for plotting
+		x_values = np.linspace(a, b, 1000)
+    
+		# Evaluate the function at x_values
+		y_values = [f(x) for x in x_values]
+    
+		# Calculate the partition points
+		partition_points = np.linspace(a, b, n+1)
+    
+		# Calculate the partition width
+		partition_width = (b - a) / n
+
+		# Plotting
+		plt.plot(x_values, y_values, label=f'Function: $y = {f}$')
+		plt.xlabel('x')
+		plt.ylabel('y')
+
+		# Plot rectangles, midpoints, and outlines
+		for i in range(n):
+			x0 = partition_points[i]
+			x1 = partition_points[i+1]
+			midpoint = (x0 + x1) / 2  # Calculate midpoint
+			y_mid = f(midpoint)  # Evaluate function at midpoint
+			plt.fill([midpoint - partition_width/2, midpoint + partition_width/2, midpoint + partition_width/2, midpoint - partition_width/2], 
+					[0, 0, y_mid, y_mid], color='orange', alpha=0.3)  # Rectangle centered at midpoint
+			plt.plot(midpoint, y_mid, 'ko')  # Black dot at midpoint
+			plt.plot([x0, x1], [y_mid, y_mid], 'ko')  # Black dots at endpoints
+			plt.plot([midpoint - partition_width/2, midpoint - partition_width/2, midpoint + partition_width/2, midpoint + partition_width/2, midpoint - partition_width/2], 
+					[0, y_mid, y_mid, 0, 0], 'r-', linewidth=0.5)  # Red outline
 	
+		plt.title('Function Plot with Rectangles (Midpoint Rule), Midpoints, and Outlines')
+		plt.grid(True)
+		plt.legend()
+		plt.savefig(filename)
+
 	
 	def simpsons_rule(fcn,a,b,n):
 		Deltax = (b-a)*1.0/n
@@ -157,6 +192,7 @@ def integrate(f, a, b, n, max_error, rule):
 			answer = simpsons_rule(f,a,b,n).n()
 		elif rule == "m":
 			answer = midpoint_rule(f,a,b,n).n()
+			midpoint_rule_plot(f,a,b,n,filepath)
 		elif rule == "t":
 			answer = trapezoid_rule(f,a,b,n).n()
 			trapezoid_rule_plot(f,a,b,n,filepath)
@@ -164,7 +200,8 @@ def integrate(f, a, b, n, max_error, rule):
 			"answer": float(answer),
 			"n": float(n),
 			"error": float(error(f, a, b, n, rule)),
-			"over_under": over_under(f, a, b, rule)
+			"over_under": over_under(f, a, b, rule),
+			"filepath": filepath
 		}
 
 # Perform the calculation
