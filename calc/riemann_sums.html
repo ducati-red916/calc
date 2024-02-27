@@ -1,87 +1,87 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Integral Calculator</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 20px;
-            background-color: #f7f7f7;
-        }
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Integral Calculator</title>
+	<style>
+		body {
+			font-family: Arial, sans-serif;
+			margin: 0;
+			padding: 20px;
+			background-color: #f7f7f7;
+		}
 
-        h1 {
-            text-align: center;
-            margin-bottom: 30px;
-        }
+		h1 {
+			text-align: center;
+			margin-bottom: 30px;
+		}
 
-        form {
-            max-width: 400px;
-            margin: 0 auto;
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
+		form {
+			max-width: 400px;
+			margin: 0 auto;
+			background-color: #fff;
+			padding: 20px;
+			border-radius: 8px;
+			box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+		}
 
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: bold;
-        }
+		label {
+			display: block;
+			margin-bottom: 8px;
+			font-weight: bold;
+		}
 
-        input[type="text"],
-        input[type="number"],
-        select {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 20px;
-            box-sizing: border-box;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            background-color: #f9f9f9;
-            transition: border-color 0.3s ease;
-        }
+		input[type="text"],
+		input[type="number"],
+		select {
+			width: 100%;
+			padding: 10px;
+			margin-bottom: 20px;
+			box-sizing: border-box;
+			border: 1px solid #ccc;
+			border-radius: 4px;
+			background-color: #f9f9f9;
+			transition: border-color 0.3s ease;
+		}
 
-        input[type="text"]:focus,
-        input[type="number"]:focus,
-        select:focus {
-            border-color: #4CAF50;
-            outline: none;
-        }
+		input[type="text"]:focus,
+		input[type="number"]:focus,
+		select:focus {
+			border-color: #4CAF50;
+			outline: none;
+		}
 
-        button {
-            width: 100%;
-            padding: 12px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
+		button {
+			width: 100%;
+			padding: 12px;
+			background-color: #4CAF50;
+			color: white;
+			border: none;
+			border-radius: 4px;
+			cursor: pointer;
+			transition: background-color 0.3s ease;
+		}
 
-        button:hover {
-            background-color: #45a049;
-        }
+		button:hover {
+			background-color: #45a049;
+		}
 
-        #result {
-            margin-top: 20px;
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
+		#result {
+			margin-top: 20px;
+			background-color: #fff;
+			padding: 20px;
+			border-radius: 8px;
+			box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+		}
 
-        #result h2 {
-            margin-top: 0;
-        }
+		#result h2 {
+			margin-top: 0;
+		}
 
-        #result p {
-            margin-bottom: 10px;
-        }
+		#result p {
+			margin-bottom: 10px;
+		}
 		
 		.back-button {
 			position: absolute;
@@ -90,108 +90,125 @@
 			font-size: 16px;
 			text-decoration: none;
 		}
-    </style>
+	</style>
 </head>
 <body>
 <a href="index.html" class="back-button">Back</a>
 <h1>Integral Calculator</h1>
 
 <form id="integralForm">
-    <label for="riemannType">Select Riemann Sums Type:</label>
-    <select id="riemannType" name="riemannType">
-        <option value="n">Riemann Sums (Defined n)</option>
-        <option value="error">Riemann Sums (Defined Error)</option>
-    </select>
+	<label for="riemannType">Select Riemann Sums Type:</label>
+	<select id="riemannType" name="riemannType">
+		<option value="n">Riemann Sums (Defined n)</option>
+		<option value="error">Riemann Sums (Defined Error)</option>
+	</select>
 
-    <label for="function">Function:</label>
-    <input type="text" id="function" name="function" required>
+	<label for="function">Function:</label>
+	<input type="text" id="function" name="function" required>
 
-    <label for="a">Lower Limit (a):</label>
-    <input type="number" id="a" name="a" required>
+	<label for="a">Lower Limit (a):</label>
+	<input type="number" id="a" name="a" required>
 
-    <label for="b">Upper Limit (b):</label>
-    <input type="number" id="b" name="b" required>
+	<label for="b">Upper Limit (b):</label>
+	<input type="number" id="b" name="b" required>
 
-    <div id="valueSection"></div>
+	<div id="valueSection"></div>
 
-    <label for="rule">Rule:</label>
-    <select id="rule" name="rule">
-        <option value="s">Simpson's Rule</option>
-        <option value="m">Midpoint Rule</option>
-        <option value="t">Trapezoid Rule</option>
-    </select>
+	<label for="rule">Rule:</label>
+	<select id="rule" name="rule">
+		<option value="s">Simpson's Rule</option>
+		<option value="m">Midpoint Rule</option>
+		<option value="t">Trapezoid Rule</option>
+	</select>
 
-    <button type="submit">Calculate</button>
+	<button type="submit">Calculate</button>
 </form>
 
 <div id="result"></div>
 <img id="graphImage" src="" alt="Graph">
 
 <script>
-    function updateValueLabel() {
-        const riemannType = document.getElementById('riemannType').value;
-        const valueSection = document.getElementById('valueSection');
-        if (riemannType === 'error') {
-            valueSection.innerHTML = `
-                <label for="max_error">Max Error:</label>
-                <input type="number" id="value" name="value" step="any" required>
-            `;
-        } else {
-            valueSection.innerHTML = `
-                <label for="n">n:</label>
-                <input type="number" id="value" name="value" required>
-            `;
-        }
-    }
+	function updateValueLabel() {
+		const riemannType = document.getElementById('riemannType').value;
+		const valueSection = document.getElementById('valueSection');
+		if (riemannType === 'error') {
+			valueSection.innerHTML = `
+				<label for="max_error">Max Error:</label>
+				<input type="number" id="value" name="value" step="any" required>
+			`;
+		} else {
+			valueSection.innerHTML = `
+				<label for="n">n:</label>
+				<input type="number" id="value" name="value" required>
+			`;
+		}
+	}
 
-   updateValueLabel();
+	updateValueLabel();
 
-    document.getElementById('riemannType').addEventListener('change', updateValueLabel);
+	document.getElementById('riemannType').addEventListener('change', updateValueLabel);
 
-    document.getElementById('integralForm').addEventListener('submit', async function(event) {
-        event.preventDefault();
+	document.getElementById('integralForm').addEventListener('submit', async function(event) {
+		event.preventDefault();
 
-        const formData = new FormData(this);
-        const requestData = {};
+		const resultDiv = document.getElementById('result');
+		resultDiv.innerHTML = '<p>Loading...</p>';
 
-        formData.forEach((value, key) => {
-            requestData[key] = value;
-        });
+		// Set timeout to display error message if loading takes longer than 45 seconds
+		const timeout = setTimeout(() => {
+			resultDiv.innerHTML = '<p>Error: Request timed out. Please try again.</p>';
+		}, 45000); // 45 seconds
 
-        const riemannType = document.getElementById('riemannType').value;
-        if (riemannType === 'error') {
-            requestData['n'] = 0;
-            requestData['max_error'] = parseFloat(document.getElementById('value').value);
-        } else {
-            requestData['n'] = parseInt(document.getElementById('value').value);
-            requestData['max_error'] = 0;
-        }
+		const formData = new FormData(this);
+		const requestData = {};
 
-        const response = await fetch('internal/sage_env.cgi?action=riemann_sums.cgi', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(requestData),
-        });
+		formData.forEach((value, key) => {
+			requestData[key] = value;
+		});
 
-        const result = await response.json();
+		const riemannType = document.getElementById('riemannType').value;
+		if (riemannType === 'error') {
+			requestData['n'] = 0;
+			requestData['max_error'] = parseFloat(document.getElementById('value').value);
+		} else {
+			requestData['n'] = parseInt(document.getElementById('value').value);
+			requestData['max_error'] = 0;
+		}
 
-        const resultDiv = document.getElementById('result');
-        resultDiv.innerHTML = `
-            <h2>Result</h2>
-            <p>Answer: ${result.answer}</p>
-            <p>n: ${result.n}</p>
-            <p>Error: ${result.error}</p>
-            <p>Over/Under: ${result.over_under}</p>
-        `;
+		const response = await fetch('internal/sage_env.cgi?action=riemann_sums.cgi', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify(requestData),
+		});
 
-        // Display graph image if filepath is provided in the result
-        if (result.filepath) {
-            const graphImage = document.getElementById('graphImage');
-            graphImage.src = result.filepath + '?' + Math.random();
-        }
-    });
+		clearTimeout(timeout); // Clear timeout since response is received
+
+		const resultData = await response.json();
+
+		if (resultData.hasOwnProperty('answer')) {
+			resultDiv.innerHTML = `
+				<h2>Result</h2>
+				<p>Answer: ${resultData.answer}</p>
+				<p>n: ${resultData.n}</p>
+				<p>Error: ${resultData.error}</p>
+				<p>Over/Under: ${resultData.over_under}</p>
+			`;
+
+			// Display graph image if filepath is provided in the result
+			if (resultData.filepath) {
+				const graphImage = document.getElementById('graphImage');
+				graphImage.src = resultData.filepath + '?' + Math.random();
+			}
+		} else {
+			resultDiv.innerHTML = '<p>Error: ' + resultData.Error + '</p>';
+
+		}
+	});
 </script>
+
+
+
 </body>
 </html>

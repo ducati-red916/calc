@@ -4,7 +4,9 @@ import sys
 import json
 import sage.all as sage
 import warnings
-from math import ceil
+import numpy as np
+import matplotlib.pyplot as plt
+
 # Turn off deprecation warning
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 
@@ -23,54 +25,49 @@ function_2 = sage.SR(request_data['function_2'])
 a = float(request_data['a'])
 b = float(request_data['b'])
 
+# Define the x range for plotting
+x_values = np.linspace(a, b, 400)
 
+# Evaluate the functions at x_values
+y_values_1 = [function_1(x_val).n() for x_val in x_values]
+y_values_2 = [function_2(x_val).n() for x_val in x_values]
 
-def area(f, g, a, b):
-    x = sage.var('x')  # Define the variable symbolically
-    
-    # Solving the equation f(x) = g(x) to find intersections
-    intersections = sage.solve(f == g, x)
-    decimal_intersections = [intersection.rhs() for intersection in intersections]
+# Plot the functions
+plt.figure(figsize=(8, 6))
+plt.plot(x_values, y_values_1, label='Function 1: $y = {}$'.format(function_1))
+plt.plot(x_values, y_values_2, label='Function 2: $y = {}$'.format(function_2))
 
-    if a == 0 and b == 0:
-        a = decimal_intersections[0]
-        b = decimal_intersections[-1]
-    decimal_intersections = [p for p in decimal_intersections if a < p < b]
+# Shade the area between the curves
+plt.fill_between(x_values, y_values_1, y_values_2, where=(y_values_1 > y_values_2), color='orange', alpha=0.3)
+plt.fill_between(x_values, y_values_2, y_values_1, where=(y_values_2 > y_values_1), color='orange', alpha=0.3)
 
-    answer = 0
-    if decimal_intersections:
-        for decimal_intersection in decimal_intersections:
-            if f(decimal_intersection - 0.0001) > g(decimal_intersection - 0.0001):
-                answer += sage.integral((f - g).simplify_full(), x, a, decimal_intersection)
-            else:
-                answer += sage.integral((g - f).simplify_full(), x, a, decimal_intersection)
+# Highlight the x-axis
+plt.axhline(0, color='black', linewidth=0.5)
 
-            if f(decimal_intersection + 0.0001) < g(decimal_intersection + 0.0001):
-                answer += sage.integral((f - g).simplify_full(), x, decimal_intersection, b)
-            else:
-                answer += sage.integral((g - f).simplify_full(), x, decimal_intersection, b)
-    else:
-        if f(a) == g(a):
-            if f(a + 0.0001) > g(a + 0.0001):
-                answer = sage.integral((f - g).simplify_full(), x, a, b)
-            else:
-                answer = sage.integral((g - f).simplify_full(), x, a, b)
-        else:
-            if f(a) > g(a):
-                answer = sage.integral((f - g).simplify_full(), x, a, b)
-            else:
-                answer = sage.integral((g - f).simplify_full(), x, a, b)
+# Set labels and title
+plt.xlabel('x')
+plt.ylabel('y')
+plt.title('Area Between Curves')
 
-    return answer
+# Add legend
+plt.legend()
 
+# Save the plot as an image
+graph_path = "/calc/internal/temp/area_between_curves_graph.png"
+plt.savefig(graph_path)
 
+# Close the plot to release memory
+plt.close()
 
+# Calculate the area between the curves
+def area(f1, f2, a, b):
+    return sage.integral(abs(f1 - f2), x, a, b).n()
 
 # Perform the calculation
-result_expression = area(function_1, function_2, a, b)
-
-# Convert the result to a string
-result_str = str(result_expression)
+result = {
+    "area": area(function_1, function_2, a, b),
+    "graph_path": graph_path
+}
 
 # Print the result as JSON
-print(json.dumps({"area": result_str}))
+print(json.dumps(result))
