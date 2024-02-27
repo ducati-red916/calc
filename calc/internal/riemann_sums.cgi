@@ -4,7 +4,7 @@ import sys
 import json
 import sage.all as sage
 import warnings
-from math import ceil
+import math
 import numpy as np
 import matplotlib.pyplot as plt
 import os
@@ -84,13 +84,13 @@ def integrate(f, a, b, n, max_error, rule):
 	def midpoint_rule_plot(f, a, b, n, filename):
 		# Define the x values for plotting
 		x_values = np.linspace(a, b, 1000)
-    
+	
 		# Evaluate the function at x_values
 		y_values = [f(x) for x in x_values]
-    
+	
 		# Calculate the partition points
 		partition_points = np.linspace(a, b, n+1)
-    
+	
 		# Calculate the partition width
 		partition_width = (b - a) / n
 
@@ -104,10 +104,10 @@ def integrate(f, a, b, n, max_error, rule):
 			x0 = partition_points[i]
 			x1 = partition_points[i+1]
 			midpoint = (x0 + x1) / 2  # Calculate midpoint
-			y_mid = f(midpoint)  # Evaluate function at midpoint
+			y_mid = f(midpoint)	 # Evaluate function at midpoint
 			plt.fill([midpoint - partition_width/2, midpoint + partition_width/2, midpoint + partition_width/2, midpoint - partition_width/2], 
 					[0, 0, y_mid, y_mid], color='orange', alpha=0.3)  # Rectangle centered at midpoint
-			plt.plot(midpoint, y_mid, 'ko')  # Black dot at midpoint
+			plt.plot(midpoint, y_mid, 'ko')	 # Black dot at midpoint
 			plt.plot([x0, x1], [y_mid, y_mid], 'ko')  # Black dots at endpoints
 			plt.plot([midpoint - partition_width/2, midpoint - partition_width/2, midpoint + partition_width/2, midpoint + partition_width/2, midpoint - partition_width/2], 
 					[0, y_mid, y_mid, 0, 0], 'r-', linewidth=0.5)  # Red outline
@@ -119,6 +119,8 @@ def integrate(f, a, b, n, max_error, rule):
 
 	
 	def simpsons_rule(fcn,a,b,n):
+		if n%2 != 0:
+			n+=1
 		Deltax = (b-a)*1.0/n
 		n2=int(n/2)
 		coeffs = [4,2]*n2
@@ -149,11 +151,11 @@ def integrate(f, a, b, n, max_error, rule):
 		
 	def n_c(f, a, b, max_error, rule):
 		if rule == "s":
-			return((diff_upper_bound(fcn=f, a=a, b=b, rule=rule)*(b-a)**5/(180*max_error)**(1/4)))
+			return(math.ceil((diff_upper_bound(fcn=f, a=a, b=b, rule=rule)*(b-a)**5/(180*max_error)**(1/4))))
 		elif rule == "m":
-			return((diff_upper_bound(fcn=f, a=a, b=b, rule=rule)*(b-a)**5/(24*max_error)**(1/2)))
+			return(math.ceil((diff_upper_bound(fcn=f, a=a, b=b, rule=rule)*(b-a)**5/(24*max_error)**(1/2))))
 		elif rule == "t":
-			return((diff_upper_bound(fcn=f, a=a, b=b, rule=rule)*(b-a)**5/(12*max_error)**(1/2)))
+			return(math.ceil((diff_upper_bound(fcn=f, a=a, b=b, rule=rule)*(b-a)**5/(12*max_error)**(1/2))))
 		
 	
 	def over_under(f, a, b, rule):
@@ -178,13 +180,16 @@ def integrate(f, a, b, n, max_error, rule):
 			answer = simpsons_rule(f,a,b,n_c(f,a,b,max_error,rule)).n()
 		elif rule == "m":
 			answer = midpoint_rule(f,a,b,n_c(f,a,b,max_error,rule)).n()
+			midpoint_rule_plot(f,a,b,n_c(f,a,b,max_error,rule),filepath)
 		elif rule == "t":
 			answer = trapezoid_rule(f,a,b,n_c(f,a,b,max_error,rule)).n()
+			trapezoid_rule_plot(f,a,b,n_c(f,a,b,max_error,rule),filepath)
 		return {
 			"answer": float(answer),
 			"n": float(n_c(f,a,b,max_error,rule)),
 			"error": float(max_error),
-			"over_under": over_under(f, a, b, rule)
+			"over_under": over_under(f, a, b, rule),
+			"filepath": filepath
 		}
 
 	else:
