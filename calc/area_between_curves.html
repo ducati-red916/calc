@@ -116,6 +116,7 @@
 </form>
 
 <div id="result"></div>
+<img id="graphImage" src="" alt="Graph">
 
 <script>
 	
@@ -153,6 +154,11 @@
 
 	if (result.hasOwnProperty('area')) {
 		resultDiv.innerHTML = `<h2>Result</h2><p>Area: ${result.area}</p>`;
+		// Display graph image if filepath is provided in the result
+		if (result.filepath) {
+			const graphImage = document.getElementById('graphImage');
+			graphImage.src = result.filepath + '?' + Math.random();
+		}
 	} else {
 		// Check if result is an object and extract error message
 		const errorMessage = typeof result === 'object' ? result.error : result;

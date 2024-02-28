@@ -5,6 +5,8 @@ import json
 import sage.all as sage
 import warnings
 import numpy as np
+import sympy as sp
+import os
 import matplotlib.pyplot as plt
 
 # Turn off deprecation warning
@@ -25,48 +27,92 @@ function_2 = sage.SR(request_data['function_2'])
 a = float(request_data['a'])
 b = float(request_data['b'])
 
-# Define the x range for plotting
-x_values = np.linspace(a, b, 400)
+def area(f, g, a, b):
+	filepath = "/calc/internal/temp/graph.png"
+	if os.path.exists(filepath):
+		os.remove(filepath)
+	x = sp.symbols('x')
+	
+	# Convert to SymPy functions
+	f_sym = sp.sympify(f)
+	g_sym = sp.sympify(g)
+	
+	# Find intersections
+	intersections = sp.solve(f_sym - g_sym, x)
+	decimal_intersections = [float(intersection.evalf()) for intersection in intersections]
+	
+	if a == 0 and b == 0:
+		a = decimal_intersections[0]
+		b = decimal_intersections[-1]
+	decimal_intersections = [p for p in decimal_intersections if a < p < b]
+	
+	answer = 0
+	if decimal_intersections:
+		for decimal_intersection in decimal_intersections:
+			if f_sym.subs(x, decimal_intersection - 0.0001) > g_sym.subs(x, decimal_intersection - 0.0001):
+				answer += sp.integrate((f_sym - g_sym), (x, a, decimal_intersection))
+			else:
+				answer += sp.integrate((g_sym - f_sym), (x, a, decimal_intersection))
+			
+			if f_sym.subs(x, decimal_intersection + 0.0001) < g_sym.subs(x, decimal_intersection + 0.0001):
+				answer += sp.integrate((f_sym - g_sym), (x, decimal_intersection, b))
+			else:
+				answer += sp.integrate((g_sym - f_sym), (x, decimal_intersection, b))
+	else:
+		if f_sym.subs(x, a) == g_sym.subs(x, a):
+			if f_sym.subs(x, a + 0.0001) > g_sym.subs(x, a + 0.0001):
+				answer = sp.integrate((f_sym - g_sym), (x, a, b))
+			else:
+				answer = sp.integrate((g_sym - f_sym), (x, a, b))
+		else:
+			if f_sym.subs(x, a) > g_sym.subs(x, a):
+				answer = sp.integrate((f_sym - g_sym), (x, a, b))
+			else:
+				answer = sp.integrate((g_sym - f_sym), (x, a, b))
+	
+	# Generate x values
+	x_values = np.linspace(min(a, b) - 1, max(a, b) + 1, 1000)
+	# Generate y values for each function
+	f_lambda = sp.lambdify('x', f_sym)
+	g_lambda = sp.lambdify('x', g_sym)
+	f_values = f_lambda(x_values)
+	g_values = g_lambda(x_values)
+	
+	# Plot the functions
+	plt.plot(x_values, f_values, label='f(x)')
+	plt.plot(x_values, g_values, label='g(x)')
+	
+	# Plot intersections
+	for intersection in intersections:
+		plt.plot(float(intersection), float(f_sym.subs('x', intersection)), 'ro')  # Plotting intersection points
+	
+	# Shade the area between the functions using the updated bounds
+	x_shade = np.linspace(a, b, 1000)  # Using updated bounds
+	f_shade = f_lambda(x_shade)
+	g_shade = g_lambda(x_shade)
+	plt.fill_between(x_shade, f_shade, g_shade, where=(f_shade > g_shade), color='lightgrey', alpha=0.5)
+	plt.fill_between(x_shade, f_shade, g_shade, where=(f_shade < g_shade), color='lightblue', alpha=0.5)
+	
+	# Add labels and legend
+	plt.xlabel('x')
+	plt.ylabel('y')
+	plt.title('Visualization of f(x) and g(x)')
+	plt.legend()
+	
+	# Show plot
+	plt.grid(True)
+	plt.savefig(filepath)
+	
+	return answer, filepath
 
-# Evaluate the functions at x_values
-y_values_1 = [function_1(x_val).n() for x_val in x_values]
-y_values_2 = [function_2(x_val).n() for x_val in x_values]
 
-# Plot the functions
-plt.figure(figsize=(8, 6))
-plt.plot(x_values, y_values_1, label='Function 1: $y = {}$'.format(function_1))
-plt.plot(x_values, y_values_2, label='Function 2: $y = {}$'.format(function_2))
 
-# Shade the area between the curves
-plt.fill_between(x_values, y_values_1, y_values_2, where=(y_values_1 > y_values_2), color='orange', alpha=0.3)
-plt.fill_between(x_values, y_values_2, y_values_1, where=(y_values_2 > y_values_1), color='orange', alpha=0.3)
-
-# Highlight the x-axis
-plt.axhline(0, color='black', linewidth=0.5)
-
-# Set labels and title
-plt.xlabel('x')
-plt.ylabel('y')
-plt.title('Area Between Curves')
-
-# Add legend
-plt.legend()
-
-# Save the plot as an image
-graph_path = "/calc/internal/temp/area_between_curves_graph.png"
-plt.savefig(graph_path)
-
-# Close the plot to release memory
-plt.close()
+area_result, filepath = area(function_1, function_2, a, b)
 
 # Calculate the area between the curves
-def area(f1, f2, a, b):
-    return sage.integral(abs(f1 - f2), x, a, b).n()
-
-# Perform the calculation
 result = {
-    "area": area(function_1, function_2, a, b),
-    "graph_path": graph_path
+	"area": str(area_result),  # Convert to float
+	"filepath": filepath
 }
 
 # Print the result as JSON
