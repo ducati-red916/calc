@@ -49,12 +49,12 @@ def area(f, g, a, b):
 	answer = 0
 	if decimal_intersections:
 		for decimal_intersection in decimal_intersections:
-			if f_sym.subs(x, decimal_intersection - 0.0001) > g_sym.subs(x, decimal_intersection - 0.0001):
+			if f_sym.subs(x, decimal_intersection - 0.01) > g_sym.subs(x, decimal_intersection - 0.01):
 				answer += sp.integrate((f_sym - g_sym), (x, a, decimal_intersection))
 			else:
 				answer += sp.integrate((g_sym - f_sym), (x, a, decimal_intersection))
 			
-			if f_sym.subs(x, decimal_intersection + 0.0001) < g_sym.subs(x, decimal_intersection + 0.0001):
+			if f_sym.subs(x, decimal_intersection + 0.01) > g_sym.subs(x, decimal_intersection + 0.01):
 				answer += sp.integrate((f_sym - g_sym), (x, decimal_intersection, b))
 			else:
 				answer += sp.integrate((g_sym - f_sym), (x, decimal_intersection, b))
